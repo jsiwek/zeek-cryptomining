@@ -74,7 +74,12 @@ export {
 	## notice.
 	const notice_pool_hosts = LOCAL_HOSTS &redef;
 
-	# Given a JSON-RPC request object, extracts the value of the "method" key.
+	## Extracts the value of the "method" key from a JSON-RPC request object.
+	##
+	## json_obj: A JSON-RPC request object.
+	##
+	## Returns: value of the "method" key in the JSON object or an empty string
+	##          if parsing the object failed.
 	global extract_json_rpc_request_method: function(json_obj: string): string;
 }
 
@@ -140,6 +145,13 @@ event signature_match(state: signature_state, msg: string, data: string)
 	if ( /json-rpc-request/ !in state$sig_id ) return;
 
 	local method: string = extract_json_rpc_request_method(data);
+
+	if ( method == "" )
+		{
+		Reporter::warning(fmt("JSON-RPC request method extraction failed: %s",
+		                      data));
+		return;
+		}
 
 	if ( method == "getwork" )
 		do_notice(state$conn, T, "HTTP-getwork", data);
