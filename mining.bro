@@ -1,4 +1,5 @@
-##! Detects hosts involved with Bitcoin mining.
+##! Detects hosts involved with Bitcoin mining (or other cryptocurrencies
+##! that share the same mining protocol like Litecoin, PPCoin, etc.).
 ##!
 ##! Bitcoin mining protocols typically involve the use of
 ##! `JSON-RPC <http://www.jsonrpc.org/specification>`_ requests to mining
