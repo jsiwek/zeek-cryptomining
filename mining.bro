@@ -154,7 +154,7 @@ event signature_match(state: signature_state, msg: string, data: string)
 		return;
 		}
 
-	if ( method == "getwork" )
+	if ( /getwork/ in method )
 		do_notice(state$conn, T, "HTTP-getwork", data);
 
 	else if ( method in gbt_methods )
