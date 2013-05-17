@@ -18,6 +18,8 @@
 ##! (the most common transports used by mining software) and then inspects
 ##! the method values of JSON-RPC requests in order to match connections that
 ##! that potentially relate to Bitcoin mining.
+##!
+##! Note that the Bitcoin P2P protocol is not currently detected.
 
 @load base/frameworks/notice
 @load base/frameworks/signatures/main
