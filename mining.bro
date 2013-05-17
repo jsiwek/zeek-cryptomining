@@ -126,14 +126,15 @@ function do_notice(c: connection, miner_orig: bool, proto: string, data: string)
 
 	if ( addr_matches_host(miner$a, notice_miner_hosts) )
 		NOTICE([$note=Bitcoin::Miner,
-		        $msg=fmt("Bitcoin miner at %s", miner$a),
+		        $msg=fmt("Bitcoin miner at %s, using %s protocol", miner$a,
+		                 proto),
 		        $sub=data,
 		        $conn=c,
 		        $identifier=fmt("%s", miner$a)]);
 
 	if ( addr_matches_host(server$a, notice_pool_hosts) )
 		NOTICE([$note=Bitcoin::Mining_Pool_Server,
-		        $msg=fmt("Bitcoin pool server at %s:%s, using %s",
+		        $msg=fmt("Bitcoin pool server at %s:%s, using %s protocol",
 		                 addr_to_uri(server$a), server$p, proto),
 		        $sub=data,
 		        $conn=c,
@@ -155,10 +156,10 @@ event signature_match(state: signature_state, msg: string, data: string)
 		}
 
 	if ( /getwork/ in method )
-		do_notice(state$conn, T, "HTTP-getwork", data);
+		do_notice(state$conn, T, "getwork", data);
 
 	else if ( method in gbt_methods )
-		do_notice(state$conn, T, "HTTP-getblocktemplate", data);
+		do_notice(state$conn, T, "getblocktemplate", data);
 
 	else if ( method in stratum_client_methods )
 		do_notice(state$conn, /reverse/ !in state$sig_id, "Stratum", data);
