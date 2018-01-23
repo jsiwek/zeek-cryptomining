@@ -94,11 +94,11 @@ function extract_json_rpc_request_method(json_obj: string): string
 
 	if ( |method_kv| != 1 ) return "";
 
-	local method_parts: string_array;
+	local method_parts: string_vec;
 
 	# split by double quotes to get the value string
 	for ( p in method_kv )
-		 method_parts = split(p, /\"/); # "
+		 method_parts = split_string(p, /\"/); # "
 
 	if ( |method_parts| != 5 ) return "";
 
