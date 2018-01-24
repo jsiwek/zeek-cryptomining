@@ -102,7 +102,7 @@ function extract_json_rpc_request_method(json_obj: string): string
 
 	if ( |method_parts| != 5 ) return "";
 
-	return method_parts[4];
+	return method_parts[3];
 	}
 
 type Endpoint: record {
