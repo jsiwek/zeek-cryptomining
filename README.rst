@@ -14,7 +14,11 @@ See mining.bro for more details on how it works.
 Installation
 ------------
 
-::
+Via `bro-pkg <http://bro-package-manager.readthedocs.io/en/stable/>`_::
+
+    bro-kg install jsiwek/bro_bitcoin
+
+Manually::
 
     cd <prefix>/share/bro/site
     git clone https://github.com/jsiwek/bro_bitcoin.git bitcoin
