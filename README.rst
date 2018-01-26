@@ -16,7 +16,7 @@ Installation
 
 Via `bro-pkg <http://bro-package-manager.readthedocs.io/en/stable/>`_::
 
-    bro-kg install jsiwek/bro_bitcoin
+    bro-pkg install jsiwek/bro_bitcoin
 
 Manually::
 
