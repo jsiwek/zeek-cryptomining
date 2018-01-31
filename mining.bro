@@ -70,6 +70,12 @@ export {
 		"submitblock",
 	} &redef;
 
+	## Other names of JSON-RPC request methods that may be used by
+	## mining clients/protocols.
+	const other_methods: set[string] = {
+		"getjob",
+	} &redef;
+
 	## Type of Bitcoin mining host which, on discovery, should raise a notice.
 	const notice_miner_hosts = LOCAL_HOSTS &redef;
 
@@ -176,4 +182,7 @@ event signature_match(state: signature_state, msg: string, data: string)
 		        $conn=state$conn,
 		        $identifier=fmt("%s%s", state$conn$id$orig_h,
 		                        state$conn$id$resp_h)]);
+
+	else if ( method in other_methods )
+		do_notice(state$conn, T, "unknown", data);
 	}
