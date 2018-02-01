@@ -70,15 +70,19 @@ export {
 		"submitblock",
 	} &redef;
 
-	## Other names of JSON-RPC request methods that may be used by
-	## mining clients/protocols.
-	const other_methods: set[string] = {
+	## Names of JSON-RPC request methods used by MinerGate application.
+	const minergate_methods: set[string] = {
 		"getjob",
 		"job",
 		"submit",
 		"login",
 		"eth_getWork",
 		"eth_submitWork",
+	} &redef;
+
+	## Other names of JSON-RPC request methods that may be used by
+	## mining clients/protocols.
+	const other_methods: set[string] = {
 	} &redef;
 
 	## Type of Bitcoin mining host which, on discovery, should raise a notice.
@@ -90,30 +94,31 @@ export {
 
 	## Extracts the value of the "method" key from a JSON-RPC request object.
 	##
-	## json_obj: A JSON-RPC request object.
+	## json_obj: A JSON-RPC request object or objects.
 	##
-	## Returns: value of the "method" key in the JSON object or an empty string
-	##          if parsing the object failed.
-	global extract_json_rpc_request_method: function(json_obj: string): string;
+	## Returns: set of values for the "method" keys in the JSON objects or an
+	##          empty set if parsing the object failed.
+	global extract_json_rpc_request_methods: function(json_obj: string): set[string];
 }
 
-function extract_json_rpc_request_method(json_obj: string): string
+function extract_json_rpc_request_methods(json_obj: string): set[string]
 	{
 	# grab '"method": "value"' string
 	local pat = /\"method\"([[:space:]]*):([[:space:]]*)\"[^"]*\"/; # "
 	local method_kv = find_all(json_obj, pat);
-
-	if ( |method_kv| != 1 ) return "";
-
 	local method_parts: string_vec;
+	local rval: set[string] = set();
 
 	# split by double quotes to get the value string
 	for ( p in method_kv )
-		 method_parts = split_string(p, /\"/); # "
+		{
+		method_parts = split_string(p, /\"/); # "
 
-	if ( |method_parts| != 5 ) return "";
+		if ( |method_parts| == 5 )
+			add rval[method_parts[3]];
+		}
 
-	return method_parts[3];
+	return rval;
 	}
 
 type Endpoint: record {
@@ -159,35 +164,41 @@ event signature_match(state: signature_state, msg: string, data: string)
 	{
 	if ( /json-rpc-request/ !in state$sig_id ) return;
 
-	local method: string = extract_json_rpc_request_method(data);
+	local methods: set[string] = extract_json_rpc_request_methods(data);
 
-	if ( method == "" )
+	if ( |methods| == 0 )
 		{
-		Reporter::warning(fmt("JSON-RPC request method extraction failed: %s",
+		Reporter::warning(fmt("JSON-RPC request method extraction failed: '%s'",
 		                      data));
 		return;
 		}
 
-	if ( /getwork/ in method )
-		do_notice(state$conn, T, "getwork", data);
+	for ( method in methods )
+		{
+		if ( /getwork/ in method )
+			do_notice(state$conn, T, "getwork", data);
 
-	else if ( method in gbt_methods )
-		do_notice(state$conn, T, "getblocktemplate", data);
+		else if ( method in gbt_methods )
+			do_notice(state$conn, T, "getblocktemplate", data);
 
-	else if ( method in stratum_client_methods )
-		do_notice(state$conn, /reverse/ !in state$sig_id, "Stratum", data);
+		else if ( method in stratum_client_methods )
+			do_notice(state$conn, /reverse/ !in state$sig_id, "Stratum", data);
 
-	else if ( method in stratum_server_methods )
-		do_notice(state$conn, /reverse/ in state$sig_id, "Stratum", data);
+		else if ( method in stratum_server_methods )
+			do_notice(state$conn, /reverse/ in state$sig_id, "Stratum", data);
 
-	else if ( /^mining\./ in method )
-		NOTICE([$note=Bitcoin::Possible_Mining,
-		        $msg=fmt("Possible Bitcoin mining over Stratum"),
-		        $sub=data,
-		        $conn=state$conn,
-		        $identifier=fmt("%s%s", state$conn$id$orig_h,
-		                        state$conn$id$resp_h)]);
+		else if ( /^mining\./ in method )
+			NOTICE([$note=Bitcoin::Possible_Mining,
+			         $msg=fmt("Possible Bitcoin mining over Stratum"),
+			         $sub=data,
+			         $conn=state$conn,
+			         $identifier=fmt("%s%s", state$conn$id$orig_h,
+			                         state$conn$id$resp_h)]);
 
-	else if ( method in other_methods )
-		do_notice(state$conn, T, "unknown", data);
+		else if ( method in minergate_methods )
+			do_notice(state$conn, T, "MinerGate", data);
+
+		else if ( method in other_methods )
+			do_notice(state$conn, T, "unknown", data);
+		}
 	}
