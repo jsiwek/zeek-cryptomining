@@ -74,6 +74,11 @@ export {
 	## mining clients/protocols.
 	const other_methods: set[string] = {
 		"getjob",
+		"job",
+		"submit",
+		"login",
+		"eth_getWork",
+		"eth_submitWork",
 	} &redef;
 
 	## Type of Bitcoin mining host which, on discovery, should raise a notice.
