@@ -1,7 +1,7 @@
-Bro Module for Detecting Cryptocurrency (Bitcoin) Mining Hosts
-==============================================================
+Zeek Module for Detecting Cryptocurrency (Bitcoin) Mining Hosts
+===============================================================
 
-This script module for Bro can detect Bitcoin, Litecoin, PPCoin, or
+This script/package for Zeek can detect Bitcoin, Litecoin, PPCoin, or
 other cryptocurrency mining traffic that uses `getwork
 <https://en.bitcoin.it/wiki/Getwork>`_, `getblocktemplate
 <https://en.bitcoin.it/wiki/Getblocktemplate>`_, or `Stratum
@@ -14,12 +14,12 @@ See mining.bro for more details on how it works.
 Installation
 ------------
 
-Via `bro-pkg <http://bro-package-manager.readthedocs.io/en/stable/>`_::
+Via `zkg <https://docs.zeek.org/projects/package-manager/en/stable/>`_::
 
-    bro-pkg install jsiwek/bro_bitcoin
+    zkg install jsiwek/zeek-cryptomining
 
 Manually::
 
-    cd <prefix>/share/bro/site
-    git clone https://github.com/jsiwek/bro_bitcoin.git bitcoin
-    echo "@load bitcoin" >> local.bro
+    cd <prefix>/share/zeek/site
+    git clone https://github.com/jsiwek/zeek-cryptomining cryptomining
+    echo "@load cryptomining" >> local.zeek

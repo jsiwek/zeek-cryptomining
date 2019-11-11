@@ -35,16 +35,16 @@ module Bitcoin;
 export {
 
 	redef enum Notice::Type += {
-		## Raised when a host doing Bitcoin mining is found.
+		## Raised when a host doing cryptomining is found.
 		Miner,
 
-		## Raised when a host is serving work to Bitcoin miners.
+		## Raised when a host is serving work to cryptominers.
 		Mining_Pool_Server,
 
-		## Raised when a host looks like it is involved in Bitcoin mining
+		## Raised when a host looks like it is involved in cryptomining
 		## using the Stratum protocol, but the JSON-RPC request method
-		## was not one of the ones in :bro:see:`Bitcoin::stratum_client_methods`
-		## or :bro:see:`Bitcoin::stratum_server_methods`, though it did start
+		## was not one of the ones in :zeek:see:`Bitcoin::stratum_client_methods`
+		## or :zeek:see:`Bitcoin::stratum_server_methods`, though it did start
 		## with "mining.".
 		Possible_Mining,
 	};
@@ -85,10 +85,10 @@ export {
 	const other_methods: set[string] = {
 	} &redef;
 
-	## Type of Bitcoin mining host which, on discovery, should raise a notice.
+	## Type of cryptomining host which, on discovery, should raise a notice.
 	const notice_miner_hosts = LOCAL_HOSTS &redef;
 
-	## Type of Bitcoin pool server host which, on discovery, should raise a
+	## Type of cryptomining pool server host which, on discovery, should raise a
 	## notice.
 	const notice_pool_hosts = LOCAL_HOSTS &redef;
 
@@ -144,7 +144,7 @@ function do_notice(c: connection, miner_orig: bool, proto: string, data: string)
 
 	if ( addr_matches_host(miner$a, notice_miner_hosts) )
 		NOTICE([$note=Bitcoin::Miner,
-		        $msg=fmt("Bitcoin miner at %s, using %s protocol", miner$a,
+		        $msg=fmt("Cryptominer at %s, using %s protocol", miner$a,
 		                 proto),
 		        $sub=data,
 		        $conn=c,
@@ -152,7 +152,7 @@ function do_notice(c: connection, miner_orig: bool, proto: string, data: string)
 
 	if ( addr_matches_host(server$a, notice_pool_hosts) )
 		NOTICE([$note=Bitcoin::Mining_Pool_Server,
-		        $msg=fmt("Bitcoin pool server at %s:%s, using %s protocol",
+		        $msg=fmt("Cryptomining pool server at %s:%s, using %s protocol",
 		                 addr_to_uri(server$a), server$p, proto),
 		        $sub=data,
 		        $conn=c,
@@ -189,7 +189,7 @@ event signature_match(state: signature_state, msg: string, data: string)
 
 		else if ( /^mining\./ in method )
 			NOTICE([$note=Bitcoin::Possible_Mining,
-			         $msg=fmt("Possible Bitcoin mining over Stratum"),
+			         $msg=fmt("Possible cryptomining over Stratum"),
 			         $sub=data,
 			         $conn=state$conn,
 			         $identifier=fmt("%s%s", state$conn$id$orig_h,
