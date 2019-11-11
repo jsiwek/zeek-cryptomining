@@ -1,5 +1,5 @@
-Zeek Module for Detecting Cryptocurrency (Bitcoin) Mining Hosts
-===============================================================
+Zeek Package To Detect Cryptocurrency (Bitcoin) Mining
+======================================================
 
 This script/package for Zeek can detect Bitcoin, Litecoin, PPCoin, or
 other cryptocurrency mining traffic that uses `getwork
