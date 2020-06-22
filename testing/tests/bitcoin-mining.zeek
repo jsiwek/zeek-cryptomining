@@ -1,4 +1,4 @@
-# @TEST-EXEC: bro -C -r $TRACES/bitcoin-mining.pcap %INPUT >out
+# @TEST-EXEC: zeek -C -r $TRACES/bitcoin-mining.pcap %INPUT >out
 # @TEST-EXEC: btest-diff out
 
 @load zeek-cryptomining
