@@ -1,6 +1,6 @@
 [package]
 aliases = zeek-cryptomining bro_bitcoin
-depends = bro-pkg >=1.5.0
+depends = zkg >=2.0.7
 tags = signatures, bitcoin, mining, cryptocurrency, cryptomining, cryptocoin
 description = Detects Bitcoin, Litecoin, or other cryptocurrency
   mining traffic that uses getwork, getblocktemplate, or Stratum mining
