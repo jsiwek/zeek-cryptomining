@@ -9,7 +9,7 @@ other cryptocurrency mining traffic that uses `getwork
 or HTTP.  Note that the module cannot currently detect the Bitcoin P2P
 protocol, which is different from the mining protocols.
 
-See mining.bro for more details on how it works.
+See mining.zeek for more details on how it works.
 
 Installation
 ------------
